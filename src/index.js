@@ -26,6 +26,16 @@ const getRootNode =
     ? (element) => element.getRootNode()
     : (element) => element.ownerDocument;
 
+// IE11 doesn't support 'contains' method for HTMLDocument
+if (
+  typeof HTMLDocument !== 'undefined' &&
+  typeof HTMLDocument.prototype.contains === 'undefined'
+) {
+  HTMLDocument.prototype.contains = function contains(node) {
+    return node.ownerDocument === this ? true : this.body.contains(node);
+  };
+}
+
 /**
  * @param {Element} el container to check in
  * @param {boolean} includeContainer add container to check
